@@ -5,14 +5,15 @@ const helmet = require('helmet');
 
 var bodyParser = require('body-parser');
 var oracledb = require('oracledb');
-const Logger = require('../NodeJS/services/logger_service')
+const Logger = require('../node-crud-rabbitmq/services/logger_service')
 
 const logger = new Logger('app')
 var oracledb = require('./database/db')
 
+
 var app = express();
 
-var user = require('../NodeJS/controllers/user');
+var user = require('../node-crud-rabbitmq/controllers/user');
 
 app.use(helmet());
 app.use(bodyParser.json());

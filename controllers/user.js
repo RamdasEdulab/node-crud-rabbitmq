@@ -7,7 +7,7 @@ const logger = new Logger('app')
 var router = express.Router();
 var oracledb = require('../database/db')
 
-
+var app = express();
 
 var connpool = {
     "user": "SYS",
@@ -32,7 +32,7 @@ var connpool = {
  
 
     
-router.get('/user_profiles', function (req, res) {
+app.get('/user_profiles', function (req, res) {
     oracledb.getConnection(connpool, function (err, connection) {
         
         if (err) {
@@ -72,7 +72,7 @@ router.get('/user_profiles', function (req, res) {
     });
 });
 
-router.get('/user_profiles/:USER_NAME', function (req, res) {
+app.get('/user_profiles/:USER_NAME', function (req, res) {
     oracledb.getConnection(connpool, function (err, connection) {
         if (err) { 
             res.set('Content-Type', 'application/json');
@@ -111,7 +111,8 @@ router.get('/user_profiles/:USER_NAME', function (req, res) {
 });
 
 
-router.post('/saveuser_profiles',upload, function (req, res) {
+app.post('/saveuser_profiles',upload, function (req, res) {
+    console.log(req.body);
     oracledb.getConnection(connpool, function (err, connection) {
         if (err) {
             res.set('Content-Type', 'application/json').status(500).send(JSON.stringify({
@@ -149,6 +150,11 @@ router.post('/saveuser_profiles',upload, function (req, res) {
 var buildUpdateStatement = function buildUpdateStatement(req) {
     var statement = "",
         bindValues = {};
+        if (req.file.filename) {
+            if (statement) statement = statement + ", ";
+            statement += "USER_IMAGE = :USER_IMAGE";
+            bindValues.USER_IMAGE = req.file.filename;
+        }
     if (req.body.DESCRIPTION) {
         if (statement) statement = statement + ", ";
         statement += "DESCRIPTION = :DESCRIPTION";
@@ -169,11 +175,7 @@ var buildUpdateStatement = function buildUpdateStatement(req) {
         statement += "COUNTRY = :COUNTRY";
         bindValues.COUNTRY = req.body.COUNTRY;
     }
-    if (req.file.filename) {
-        if (statement) statement = statement + ", ";
-        statement += "USER_IMAGE = :USER_IMAGE";
-        bindValues.USER_IMAGE = req.file.filename;
-    }
+    
     statement += " WHERE USER_NAME = :USER_NAME";
     bindValues.USER_NAME = req.params.USER_NAME;
     statement = "UPDATE USER_PROFILES SET " + statement;
@@ -185,7 +187,7 @@ var buildUpdateStatement = function buildUpdateStatement(req) {
 };
 
 
-router.put('/user_profiles/:USER_NAME',upload, function (req, res) {
+app.put('/user_profiles/:USER_NAME',upload, function (req, res) {
     oracledb.getConnection(connpool, function (err, connection) {
         if (err) { 
             res.set('Content-Type', 'application/json').status(500).send(JSON.stringify({
@@ -223,7 +225,7 @@ router.put('/user_profiles/:USER_NAME',upload, function (req, res) {
     });
 });
 
-router.delete('/user_profiles/:USER_NAME', function (req, res) {
+app.delete('/user_profiles/:USER_NAME', function (req, res) {
     oracledb.getConnection(connpool, function (err, connection) {
         if (err) {
             res.set('Content-Type', 'application/json');
@@ -260,4 +262,4 @@ router.delete('/user_profiles/:USER_NAME', function (req, res) {
     });
 });
 
-module.exports =router;
+module.exports = app;

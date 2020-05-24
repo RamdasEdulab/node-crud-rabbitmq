@@ -120,17 +120,17 @@ function customer() {
          
         } else {
           IsCodeApplicableForTransaction.message =
-          " lcyAmount'" +
-          Transction.transDate +
-          "' is Not with range '" +
+          " usedcodes'" +
+          Transction.usedCount +
+          "'Customer has already used  maximim no of usages'" +
           OfferCode.codeName +
-          "' startDateTime & endDateTime '" +
-          OfferCode.startDateTime.OfferCode.endDateTime +
+          "'  '" +
+          OfferCode.maximumUsagePerCustomer +
           "'"; 
         }
         } else {
         IsCodeApplicableForTransaction.message =
-        " lcyAmount'" +
+        " transdate'" +
         Transction.transDate +
         "' is Not with range '" +
         OfferCode.codeName +
@@ -187,7 +187,7 @@ function customer() {
         Transction.transTypeCode +
         "' is Not Applicable for '" +
         OfferCode.codeName +
-        "', Aviailable Channels '" +
+        "', Aviailable Transction Types'" +
         OfferCode.termsFilter.transTypeCode +
         "'";    
     
